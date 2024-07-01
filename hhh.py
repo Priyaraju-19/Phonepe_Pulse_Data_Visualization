@@ -9,8 +9,7 @@ db_name = 'phonepe_pulse'
 h = '3307'
 
 # CSV file path
-csv_file_path = 'C:/Users/samue/Downloads/bus attrocates/Phonepe_Pulse_Data_Visualization-main/Phonepe_Pulse_Data_Visualization-main/Data/top_trans.csv'
-
+csv_file_path = "/Users/padhmapriya/Downloads/top_trans.csv"
 # Specify the target table name in your database
 table_name = 'top_trans'
 
