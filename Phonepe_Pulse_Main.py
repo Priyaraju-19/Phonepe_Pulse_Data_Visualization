@@ -11,9 +11,9 @@ from PIL import Image
 # Setting up page configuration
 icon = Image.open(r"/Users/padhmapriya/Downloads/ICN.png")
 st.set_page_config(page_title= "Phonepe Pulse Data Visualization ,
-                   page_icon= icon,
-                   layout= "wide",
-                   initial_sidebar_state= "expanded",
+                   page_icon=icon,
+                   layout="wide",
+                   initial_sidebar_state="expanded",
                    menu_items={'About': """# This dashboard app is created by *Padhma Priya*!
                                         Data has been cloned from Phonepe Pulse Github Repo"""})
 
