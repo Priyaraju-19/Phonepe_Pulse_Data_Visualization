@@ -9,8 +9,8 @@ from streamlit_option_menu import option_menu
 from PIL import Image
 
 # Setting up page configuration
-icon = Image.open(r"C:\Users\samue\Downloads\bus attrocates\Phonepe_Pulse_Data_Visualization-main\Phonepe_Pulse_Data_Visualization\Data\ICN.png")
-st.set_page_config(page_title= "Phonepe Pulse Data Visualization | By Padhma Priya",
+icon = Image.open(r"/Users/padhmapriya/Downloads/ICN.png")
+st.set_page_config(page_title= "Phonepe Pulse Data Visualization ,
                    page_icon= icon,
                    layout= "wide",
                    initial_sidebar_state= "expanded",
