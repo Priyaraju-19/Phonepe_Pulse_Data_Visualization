@@ -2,7 +2,6 @@ import pandas as pd
 import mysql.connector as sql
 import streamlit as st
 import plotly.express as px
-import os
 import json
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -18,10 +17,7 @@ st.set_page_config(page_title="Phonepe Pulse Data Visualization",
 
 st.sidebar.header(":wave: :violet[**Hello! Welcome to the dashboard**]")
 
-# #To clone the Github Pulse repository use the following code
-# Reference Syntax - Repo.clone_from("Clone Url", "Your working directory")
-
-# Creating connection with mysql workbench
+# Creating connection with MySQL workbench
 mydb = sql.connect(host="127.0.0.1",
                    user="root",
                    password="12345",
@@ -32,11 +28,11 @@ mycursor = mydb.cursor(buffered=True)
 # Creating option menu in the side bar
 with st.sidebar:
     selected = option_menu("Menu", ["Home", "Top Charts", "Explore Data", "About"], 
-                icons=["house", "graph-up-arrow", "bar-chart-line", "exclamation-circle"],
-                menu_icon="menu-button-wide",
-                default_index=0,
-                styles={"nav-link": {"font-size": "20px", "text-align": "left", "margin": "-2px", "--hover-color": "#6F36AD"},
-                        "nav-link-selected": {"background-color": "#6F36AD"}})
+                           icons=["house", "graph-up-arrow", "bar-chart-line", "exclamation-circle"],
+                           menu_icon="menu-button-wide",
+                           default_index=0,
+                           styles={"nav-link": {"font-size": "20px", "text-align": "left", "margin": "-2px", "--hover-color": "#6F36AD"},
+                                   "nav-link-selected": {"background-color": "#6F36AD"}})
 
 # MENU 1 - HOME
 if selected == "Home":
@@ -48,7 +44,7 @@ if selected == "Home":
         st.write(" ")
         st.markdown("### :violet[Domain:] Fintech")
         st.markdown("### :violet[Technologies used:] Github Cloning, Python, Pandas, MySQL, mysql-connector-python, Streamlit, and Plotly.")
-        st.markdown("### :violet[Overview:] In this streamlit web app you can visualize the phonepe pulse data and gain insights on transactions, number of users, top 10 state, district, pincode and which brand has most number of users and so on. Bar charts, Pie charts, and Geo map visualization are used to get some insights.")
+        st.markdown("### :violet[Overview:] In this Streamlit web app, you can visualize the PhonePe Pulse data and gain a lot of insights on transactions, number of users, top 10 states, districts, pin codes, and which brand has the most number of users, and so on. Bar charts, Pie charts, and Geo map visualizations are used to get some insights.")
 
 # MENU 2 - TOP CHARTS
 if selected == "Top Charts":
@@ -62,56 +58,56 @@ if selected == "Top Charts":
     with colum2:
         st.info(
             """
-            #### From this menu we can get insights like:
+            #### From this menu we can get insights like :
             - Overall ranking on a particular Year and Quarter.
             - Top 10 State, District, Pincode based on Total number of transaction and Total amount spent on phonepe.
             - Top 10 State, District, Pincode based on Total phonepe users and their app opening frequency.
             - Top 10 mobile brands and its percentage based on the how many people use phonepe.
             """, icon="🔍"
         )
-        
+
     # Top Charts - TRANSACTIONS    
     if Type == "Transactions":
         col1, col2, col3 = st.columns([1, 1, 1], gap="small")
         
         with col1:
             st.markdown("### :violet[State]")
-            mycursor.execute(f"select state, sum(Transaction_count) as Total_Transactions_Count, sum(Transaction_amount) as Total from agg_trans where year = {Year} and quarter = {Quarter} group by state order by Total desc limit 10")
+            mycursor.execute(f"SELECT state, SUM(Transaction_count) AS Total_Transactions_Count, SUM(Transaction_amount) AS Total FROM agg_trans WHERE year = {Year} AND quarter = {Quarter} GROUP BY state ORDER BY Total DESC LIMIT 10")
             df = pd.DataFrame(mycursor.fetchall(), columns=['State', 'Transactions_Count', 'Total_Amount'])
             fig = px.pie(df, values='Total_Amount',
-                             names='State',
-                             title='Top 10',
-                             color_discrete_sequence=px.colors.sequential.Agsunset,
-                             hover_data=['Transactions_Count'],
-                             labels={'Transactions_Count':'Transactions_Count'})
+                         names='State',
+                         title='Top 10',
+                         color_discrete_sequence=px.colors.sequential.Agsunset,
+                         hover_data=['Transactions_Count'],
+                         labels={'Transactions_Count': 'Transactions_Count'})
 
             fig.update_traces(textposition='inside', textinfo='percent+label')
             st.plotly_chart(fig, use_container_width=True)
             
         with col2:
             st.markdown("### :violet[District]")
-            mycursor.execute(f"select district, sum(Count) as Total_Count, sum(Amount) as Total from map_trans where year = {Year} and quarter = {Quarter} group by district order by Total desc limit 10")
+            mycursor.execute(f"SELECT district, SUM(Count) AS Total_Count, SUM(Amount) AS Total FROM map_trans WHERE year = {Year} AND quarter = {Quarter} GROUP BY district ORDER BY Total DESC LIMIT 10")
             df = pd.DataFrame(mycursor.fetchall(), columns=['District', 'Transactions_Count', 'Total_Amount'])
             fig = px.pie(df, values='Total_Amount',
-                             names='District',
-                             title='Top 10',
-                             color_discrete_sequence=px.colors.sequential.Agsunset,
-                             hover_data=['Transactions_Count'],
-                             labels={'Transactions_Count':'Transactions_Count'})
+                         names='District',
+                         title='Top 10',
+                         color_discrete_sequence=px.colors.sequential.Agsunset,
+                         hover_data=['Transactions_Count'],
+                         labels={'Transactions_Count': 'Transactions_Count'})
 
             fig.update_traces(textposition='inside', textinfo='percent+label')
             st.plotly_chart(fig, use_container_width=True)
             
         with col3:
             st.markdown("### :violet[Pincode]")
-            mycursor.execute(f"select pincode, sum(Transaction_count) as Total_Transactions_Count, sum(Transaction_amount) as Total from top_trans where year = {Year} and quarter = {Quarter} group by pincode order by Total desc limit 10")
+            mycursor.execute(f"SELECT pincode, SUM(Transaction_count) AS Total_Transactions_Count, SUM(Transaction_amount) AS Total FROM top_trans WHERE year = {Year} AND quarter = {Quarter} GROUP BY pincode ORDER BY Total DESC LIMIT 10")
             df = pd.DataFrame(mycursor.fetchall(), columns=['Pincode', 'Transactions_Count', 'Total_Amount'])
             fig = px.pie(df, values='Total_Amount',
-                             names='Pincode',
-                             title='Top 10',
-                             color_discrete_sequence=px.colors.sequential.Agsunset,
-                             hover_data=['Transactions_Count'],
-                             labels={'Transactions_Count':'Transactions_Count'})
+                         names='Pincode',
+                         title='Top 10',
+                         color_discrete_sequence=px.colors.sequential.Agsunset,
+                         hover_data=['Transactions_Count'],
+                         labels={'Transactions_Count': 'Transactions_Count'})
 
             fig.update_traces(textposition='inside', textinfo='percent+label')
             st.plotly_chart(fig, use_container_width=True)
@@ -123,9 +119,9 @@ if selected == "Top Charts":
         with col1:
             st.markdown("### :violet[Brands]")
             if Year == 2022 and Quarter in [2, 3, 4]:
-                st.markdown("#### Sorry, No Data to Display for 2022 Qtr 2, 3, 4")
+                st.markdown("#### Sorry, no data to display for 2022 Qtr 2, 3, 4")
             else:
-                mycursor.execute(f"select brands, sum(count) as Total_Count, avg(percentage)*100 as Avg_Percentage from agg_user where year = {Year} and quarter = {Quarter} group by brands order by Total_Count desc limit 10")
+                mycursor.execute(f"SELECT brands, SUM(count) AS Total_Count, AVG(percentage)*100 AS Avg_Percentage FROM agg_user WHERE year = {Year} AND quarter = {Quarter} GROUP BY brands ORDER BY Total_Count DESC LIMIT 10")
                 df = pd.DataFrame(mycursor.fetchall(), columns=['Brand', 'Total_Users', 'Avg_Percentage'])
                 fig = px.bar(df,
                              title='Top 10',
@@ -134,11 +130,11 @@ if selected == "Top Charts":
                              orientation='h',
                              color='Avg_Percentage',
                              color_continuous_scale=px.colors.sequential.Agsunset)
-                st.plotly_chart(fig, use_container_width=True)   
+                st.plotly_chart(fig, use_container_width=True)
     
         with col2:
             st.markdown("### :violet[District]")
-            mycursor.execute(f"select district, sum(RegisteredUser) as Total_Users, sum(AppOpens) as Total_Appopens from map_user where year = {Year} and quarter = {Quarter} group by district order by Total_Users desc limit 10")
+            mycursor.execute(f"SELECT district, SUM(RegisteredUser) AS Total_Users, SUM(AppOpens) AS Total_Appopens FROM map_user WHERE year = {Year} AND quarter = {Quarter} GROUP BY district ORDER BY Total_Users DESC LIMIT 10")
             df = pd.DataFrame(mycursor.fetchall(), columns=['District', 'Total_Users', 'Total_Appopens'])
             df.Total_Users = df.Total_Users.astype(float)
             fig = px.bar(df,
@@ -152,7 +148,7 @@ if selected == "Top Charts":
               
         with col3:
             st.markdown("### :violet[Pincode]")
-            mycursor.execute(f"select Pincode, sum(RegisteredUsers) as Total_Users from top_user where year = {Year} and quarter = {Quarter} group by Pincode order by Total_Users desc limit 10")
+            mycursor.execute(f"SELECT Pincode, SUM(RegisteredUsers) AS Total_Users FROM top_user WHERE year = {Year} AND quarter = {Quarter} GROUP BY Pincode ORDER BY Total_Users DESC LIMIT 10")
             df = pd.DataFrame(mycursor.fetchall(), columns=['Pincode', 'Total_Users'])
             fig = px.pie(df,
                          values='Total_Users',
@@ -161,8 +157,4 @@ if selected == "Top Charts":
                          color_discrete_sequence=px.colors.sequential.Agsunset,
                          hover_data=['Total_Users'])
             fig.update_traces(textposition='inside', textinfo='percent+label')
-            st.plotly_chart(fig, use_container_width=True)
-            
-        with col4:
-            st.markdown("### :violet[State]")
-            mycursor.execute(f"select state, sum(Registereduser) as Total_Users, sum(AppOpens) as Total_Appopens from map_user where year = {Year} and
+            st.plotly_chart(fig, use_container
